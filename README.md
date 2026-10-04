@@ -1,5 +1,69 @@
-## aws-mwaa-docker-images
+# aws-mwaa-docker-images
 
+## mwaa docker image起動手順
+```bash
+cd amazon-mwaa-docker-images
+
+# 3.3.1を指定する
+python3 create_venvs.py --target development --version 3.3.1
+
+# 仮想環境に入る
+source .venv/bin/activate 
+
+# ディレクトリ移動
+cd images/airflow/3.3.1
+
+# ビルド＆起動
+./run.sh
+```
+
+`http://localhost:8080`にて、Airflow UIにアクセス可能
+
+
+## plugin.zip作成手順
+1. `requirements.txt`を用意する
+- 依存パッケージをまとめたrequirements.txtを用意し、`mages/airflow/3.3.1/requirements/`に配置、もしくは追記。
+
+2. MWAA環境下でも、依存関係の衝突を起こさずに起動できるかテスト
+
+```bash
+cd amazon-mwaa-docker-images
+
+# 3.3.1を指定する
+python3 create_venvs.py --target development --version 3.3.1
+
+# 仮想環境に入る
+source .venv/bin/activate
+
+# テスト実行
+cd images/airflow/3.3.1 && ./run.sh test-requirements
+```
+
+下記メッセージで終わればOK。Ctrl + C ２回で終了。
+```bash
+:
+:
+Aborting on container exit...
+Container mwaa-331-requirements Stopping 
+Container mwaa-331-requirements Stopped
+```
+
+3. zip作成
+```bash
+cd ../../..
+pip download -r images/airflow/3.3.1/requirements/requirements.txt -d plugins
+
+# zip ファイルに圧縮
+cd plugins
+cd plugins && zip -r ../plugins.zip .
+```
+
+4. S3に配置
+タイミング注意
+
+
+---
+# 以下、AWS公式README
 ## Overview
 
 This repository contains the Docker Images that [Amazon
