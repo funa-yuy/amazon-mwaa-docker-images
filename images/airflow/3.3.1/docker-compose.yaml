@@ -63,6 +63,11 @@ x-airflow-common: &airflow-common
     MWAA__HEALTH_MONITORING_ENABLE_REVAMPED_HEALTHCHECK: ${MWAA__HEALTH_MONITORING_ENABLE_REVAMPED_HEALTHCHECK}
     MWAA__CORE__API_SERVER_URL: ${MWAA__CORE__API_SERVER_URL}
 
+    # 追記↓
+    HTTP_PROXY: ${HTTP_PROXY}
+    HTTPS_PROXY: ${HTTPS_PROXY}
+    NO_PROXY: "localhost,127.0.0.1,postgres,sqs"
+    no_proxy: "localhost,127.0.0.1,postgres,sqs"
   volumes:
     - ./dags:/usr/local/airflow/dags
     - ./plugins:/usr/local/airflow/plugins

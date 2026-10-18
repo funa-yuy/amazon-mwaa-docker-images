@@ -1,5 +1,12 @@
 # aws-mwaa-docker-images
 
+
+## 事前に読むべきドキュメント
+- requirements の更新とテスト[https://aws.amazon.com/jp/blogs/news/best-practices-for-migrating-from-apache-airflow-2-x-to-apache-airflow-3-x-on-amazon-mwaa/]
+- requirements.txtファイルの作成[https://docs.aws.amazon.com/ja_jp/mwaa/latest/userguide/working-dags-dependencies.html#working-dags-dependencies-test-create]
+- オプション 2: Python wheel (.whl)[https://docs.aws.amazon.com/ja_jp/mwaa/latest/userguide/best-practices-dependencies.html#best-practices-dependencies-different-ways]
+
+
 ## mwaa docker image起動手順
 ```bash
 cd amazon-mwaa-docker-images
@@ -50,17 +57,18 @@ Container mwaa-331-requirements Stopped
 
 3. zip作成
 ```bash
-cd ../../..
-pip download -r images/airflow/3.3.1/requirements/requirements.txt -d plugins
+# パッケージ (.whl) をダウンロード
+pip download -r requirements/requirements.txt -d requirements/wheelhouse/
+
+# 本番用ファイル（packaged_requirements.txt）を生成
+{ echo "--no-index"; echo "--find-links /usr/local/airflow/plugins"; cat requirements/requirements.txt; } > requirements/packaged_requirements.txt
 
 # zip ファイルに圧縮
-cd plugins
-cd plugins && zip -r ../plugins.zip .
+cd requirements/wheelhouse && zip -r ../plugins.zip .
 ```
 
 4. S3に配置
-タイミング注意
-
+packaged_requirements.txtとplugins.zipを、S3に配置
 
 ---
 # 以下、AWS公式README
