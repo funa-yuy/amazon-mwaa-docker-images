@@ -43,8 +43,11 @@ fi
 FERNET_KEY=$(cat "${FERNET_KEY_FILE}")
 export FERNET_KEY
 
-# Build the Docker image
-./build.sh $CONTAINER_RUNTIME
+# 引数が "up" でない場合のみビルドを実行する
+if [ "$COMMAND" != "up" ]; then
+    # Build the Docker image
+    ./build.sh $CONTAINER_RUNTIME
+fi
 
 ACCOUNT_ID="" # Put your account ID here.
 ENV_NAME="" # Choose an environment name here.
